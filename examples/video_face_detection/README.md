@@ -55,3 +55,47 @@ For each detected face in a frame:
 - Keeps track of best quality face image for each unique person
 - Uses face size as quality metric
 - Updates stored face image when better quality found
+
+## Sample output of face_timestamp.json: 
+```
+{
+    "face_0": {
+        "appearances": [
+            {
+                "start": "0:00:00",
+                "end": "0:00:06",
+                "duration": "6.07s"
+            }
+        ],
+        "total_appearances": 1,
+        "face_image": "faces/face_face_0.jpg"
+    },
+    "face_1": {
+        "appearances": [
+            {
+                "start": "0:00:01",
+                "end": "0:00:01",
+                "duration": "0.00s"
+            },
+            {
+                "start": "0:00:04",
+                "end": "0:00:04",
+                "duration": "0.00s"
+            }
+        ],
+        "total_appearances": 2,
+        "face_image": "faces/face_face_1.jpg"
+    },
+    "face_2": {
+        "appearances": [
+            {
+                "start": "0:00:06",
+                "end": "0:00:54",
+                "duration": "48.27s"
+            }
+        ],
+        "total_appearances": 1,
+        "face_image": "faces/face_face_2.jpg"
+    }
+}
+```
