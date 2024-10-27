@@ -1,0 +1,9 @@
+indexify
+pytubefix
+opencv-python
+cmake
+dlib
+setuptools
+face_recognition_models
+face_recognition
+numpy
