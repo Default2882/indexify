@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import traceback
 from typing import (
@@ -84,8 +85,12 @@ class IndexifyFunction:
     placement_constraints: List[PlacementConstraints] = []
     accumulate: Optional[Type[Any]] = None
     encoder: Optional[str] = "cloudpickle"
+    is_async: bool = False
 
     def run(self, *args, **kwargs) -> Union[List[Any], Any]:
+        pass
+
+    def async_run(self, *args, **kwargs) -> Union[List[Any], Any]:
         pass
 
     def partial(self, **kwargs) -> Callable:
@@ -168,6 +173,9 @@ def indexify_function(
         def run(self, *args, **kwargs):
             return fn(*args, **kwargs)
 
+        def async_run(self, *args, **kwargs):
+            return asyncio.run(fn(*args, **kwargs))
+
         # Apply original signature and annotations to run method
         run.__signature__ = fn_sig
         run.__annotations__ = fn_hints
@@ -182,6 +190,8 @@ def indexify_function(
             "accumulate": accumulate,
             "encoder": encoder,
             "run": run,
+            "async_run": async_run,
+            "is_async": inspect.iscoroutinefunction(fn)
         }
 
         return type("IndexifyFunction", (IndexifyFunction,), attrs)
@@ -261,7 +271,10 @@ class IndexifyFunctionWrapper:
             args.append(input)
 
         try:
-            extracted_data = self.indexify_function.run(*args, **kwargs)
+            if not self.indexify_function.is_async:
+                extracted_data = self.indexify_function.run(*args, **kwargs)
+            else:
+                extracted_data = self.indexify_function.async_run(*args, **kwargs)
         except Exception as e:
             return [], traceback.format_exc()
         if extracted_data is None:
